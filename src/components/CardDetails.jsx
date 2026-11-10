@@ -73,8 +73,6 @@ const CardDetails = ({ card, onClose }) => {
     })
   }
 
-  // Expand / Collapse checklist
-
   const toggleChecklist = async (checklistId) => {
 
     if (showChecklist.includes(checklistId)) {

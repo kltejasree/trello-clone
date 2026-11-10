@@ -51,12 +51,12 @@ const Description = () => {
         <>
             <div className="mt-8">
 
-                {/* Description heading */}
+             
                 <div className="flex justify-between items-center mb-3">
 
                     <div className="flex items-center gap-3">
 
-                        {/* Hover icon */}
+                    
                         <div
                             onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={() => setIsHovered(false)}
@@ -89,7 +89,6 @@ const Description = () => {
 
                 </div>
 
-                {/* Description content */}
                 {showDescription && (
                     <>
                         {!isSaved && (
@@ -135,7 +134,7 @@ const Description = () => {
                             </>
                         )}
 
-                        {/* Saved description */}
+                     
                         {isSaved && (
                             <h4
                                 onClick={handleEdit}

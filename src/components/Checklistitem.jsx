@@ -1,12 +1,29 @@
-import React from 'react'
+
+import React, { useState } from 'react'
+import { Popover } from 'antd'
 
 const ChecklistItem = ({ item, onUpdate, onDelete }) => {
+
+  const [open, setOpen] = useState(false)
+
+  const hide = () => {
+    setOpen(false)
+  }
+
+  const handleOpenChange = (newOpen) => {
+    setOpen(newOpen)
+  }
 
   const handleChange = (e) => {
     onUpdate(
       item.id,
       e.target.checked ? 'complete' : 'incomplete'
     )
+  }
+
+  const handleDelete = () => {
+    onDelete(item.id)
+    hide()
   }
 
   return (
@@ -33,12 +50,37 @@ const ChecklistItem = ({ item, onUpdate, onDelete }) => {
 
       </div>
 
-      <button
-        onClick={() => onDelete(item.id)}
-        className="text-red-500 hover:text-red-700 text-sm"
+      <Popover
+        trigger="click"
+        open={open}
+        onOpenChange={handleOpenChange}
+        content={
+          <div className="w-32">
+
+            <div className="flex justify-between items-center mb-2">
+              <h4 className="font-medium">Item actions</h4>
+
+              <button onClick={hide}>
+                ×
+              </button>
+            </div>
+
+            <button
+              onClick={handleDelete}
+              className="text-red-500 hover:text-red-700"
+            >
+              Delete
+            </button>
+
+          </div>
+        }
       >
-        Delete
-      </button>
+
+        <button className="text-lg font-bold">
+          ...
+        </button>
+
+      </Popover>
 
     </div>
   )
