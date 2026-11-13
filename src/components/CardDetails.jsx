@@ -1,161 +1,235 @@
-import React, { useState, useEffect } from 'react'
+import React, { useReducer, useEffect } from 'react'
 import { Modal } from 'antd'
-
 
 import CardActions from './CardActions'
 import ChecklistSection from './ChecklistSection'
-
 import Description from './Description'
 
 import {
-  createChecklist,
-  getAllChecklists,
-  deleteChecklist
+    createChecklist,
+    getAllChecklists,
+    deleteChecklist
 } from '../api/CheckLists'
 
 import {
-  createCheckitem,
-  getCheckItems,
-  deleteCheckItem,
-  updateCheckItem
+    createCheckitem,
+    getCheckItems,
+    deleteCheckItem,
+    updateCheckItem
 } from '../api/CheckItems'
+
+
+const initialState = {
+    checklists: [],
+    checkItems: {},
+    showChecklist: []
+}
+
+
+const cardDetailsReducer = (state, action) => {
+    switch (action.type) {
+
+        case "fetchChecklists":
+            return {
+                ...state,
+                checklists: action.payload
+            }
+
+        case "fetchCheckItems":
+            return {
+                ...state,
+                checkItems: {
+                    ...state.checkItems,
+                    [action.payload.checklistId]: action.payload.data
+                }
+            }
+
+        case "showChecklist":
+            return {
+                ...state,
+                showChecklist: [...state.showChecklist, action.payload]
+            }
+
+        case "hideChecklist":
+            return {
+                ...state,
+                showChecklist: state.showChecklist.filter(
+                    (id) => id !== action.payload
+                )
+            }
+
+        case "deleteCheckItems":
+            const updatedItems = { ...state.checkItems }
+            delete updatedItems[action.payload]
+
+            return {
+                ...state,
+                checkItems: updatedItems
+            }
+
+        default:
+            return state
+    }
+}
+
 
 const CardDetails = ({ card, onClose }) => {
 
-  const [checklists, setChecklists] = useState([])
-  const [checkItems, setCheckItems] = useState({})
-  const [showChecklist, setShowChecklist] = useState([])
-
-  // Fetch all checklists
-
-  const getchecklists = async () => {
-    const data = await getAllChecklists(card.id)
-    setChecklists(data)
-  }
-
-  useEffect(() => {
-    getchecklists()
-  }, [card.id])
-
-  // Fetch items belonging to a particular checklist
-
-  const fetchCheckItems = async (checklistId) => {
-    const data = await getCheckItems(checklistId)
-
-    setCheckItems((prev) => ({
-      ...prev,
-      [checklistId]: data
-    }))
-  }
-
-  // Create checklist
-
-  const handleAddChecklist = async (checkListTitle) => {
-    await createChecklist(card.id, checkListTitle)
-    await getchecklists()
-  }
-
-  // Delete checklist
-
-  const handleDeleteChecklist = async (checklistId) => {
-    await deleteChecklist(checklistId)
-
-    await getchecklists()
-
-    setShowChecklist((prev) =>
-      prev.filter((id) => id !== checklistId)
+    const [state, dispatch] = useReducer(
+        cardDetailsReducer,
+        initialState
     )
 
-    setCheckItems((prev) => {
-      const updated = { ...prev }
-      delete updated[checklistId]
-      return updated
-    })
-  }
 
-  const toggleChecklist = async (checklistId) => {
+    // Fetch all checklists
 
-    if (showChecklist.includes(checklistId)) {
+    const getchecklists = async () => {
+        const data = await getAllChecklists(card.id)
 
-      setShowChecklist((prev) =>
-        prev.filter((id) => id !== checklistId)
-      )
-
-    } else {
-
-      setShowChecklist((prev) => [...prev, checklistId])
-
-      await fetchCheckItems(checklistId)
-
+        dispatch({
+            type: "fetchChecklists",
+            payload: data
+        })
     }
-  }
 
-  // Create checklist item
 
-  const handleAddItem = async (checklistId, itemTitle) => {
+    useEffect(() => {
+        getchecklists()
+    }, [card.id])
 
-    if (!itemTitle.trim()) return
 
-    await createCheckitem(checklistId, itemTitle)
+    // Fetch items belonging to a particular checklist
 
-    await fetchCheckItems(checklistId)
+    const fetchCheckItems = async (checklistId) => {
+        const data = await getCheckItems(checklistId)
 
-  }
+        dispatch({
+            type: "fetchCheckItems",
+            payload: {
+                checklistId,
+                data
+            }
+        })
+    }
 
-  // Update checklist item status
 
-  const handleUpdateItem = async (checklistId, itemId, state) => {
+    // Create checklist
 
-    await updateCheckItem(card.id, itemId, state)
+    const handleAddChecklist = async (checkListTitle) => {
+        await createChecklist(card.id, checkListTitle)
 
-    await fetchCheckItems(checklistId)
+        await getchecklists()
+    }
 
-  }
 
-  // Delete checklist item
+    // Delete checklist
 
-  const handleDeleteItem = async (checklistId, itemId) => {
+    const handleDeleteChecklist = async (checklistId) => {
 
-    await deleteCheckItem(checklistId, itemId)
+        await deleteChecklist(checklistId)
 
-    await fetchCheckItems(checklistId)
+        await getchecklists()
 
-  }
+        dispatch({
+            type: "hideChecklist",
+            payload: checklistId
+        })
 
-  return (
-    <Modal
-      title={card.name}
-      open={true}
-      onCancel={onClose}
-      footer={null}
-      width={800}
-    >
+        dispatch({
+            type: "deleteCheckItems",
+            payload: checklistId
+        })
+    }
 
-      <div>
 
-       
+    // Toggle checklist
 
-        <CardActions
-          onAddChecklist={handleAddChecklist}
-        />
+    const toggleChecklist = async (checklistId) => {
 
-        <Description />
+        if (state.showChecklist.includes(checklistId)) {
 
-        <ChecklistSection
-          checklists={checklists}
-          checkItems={checkItems}
-          showChecklist={showChecklist}
-          onToggleChecklist={toggleChecklist}
-          onDeleteChecklist={handleDeleteChecklist}
-          onAddItem={handleAddItem}
-          onUpdateItem={handleUpdateItem}
-          onDeleteItem={handleDeleteItem}
-        />
+            dispatch({
+                type: "hideChecklist",
+                payload: checklistId
+            })
 
-      </div>
+        } else {
 
-    </Modal>
-  )
+            dispatch({
+                type: "showChecklist",
+                payload: checklistId
+            })
+
+            await fetchCheckItems(checklistId)
+
+        }
+    }
+
+
+    // Create checklist item
+
+    const handleAddItem = async (checklistId, itemTitle) => {
+
+        if (!itemTitle.trim()) return
+
+        await createCheckitem(checklistId, itemTitle)
+
+        await fetchCheckItems(checklistId)
+    }
+
+
+    // Update checklist item status
+
+    const handleUpdateItem = async (checklistId, itemId, itemState) => {
+
+        await updateCheckItem(card.id, itemId, itemState)
+
+        await fetchCheckItems(checklistId)
+    }
+
+
+    // Delete checklist item
+
+    const handleDeleteItem = async (checklistId, itemId) => {
+
+        await deleteCheckItem(checklistId, itemId)
+
+        await fetchCheckItems(checklistId)
+    }
+
+
+    return (
+        <Modal
+            title={card.name}
+            open={true}
+            onCancel={onClose}
+            footer={null}
+            width={800}
+        >
+
+            <div>
+
+                <CardActions
+                    onAddChecklist={handleAddChecklist}
+                />
+
+                <Description />
+
+                <ChecklistSection
+                    checklists={state.checklists}
+                    checkItems={state.checkItems}
+                    showChecklist={state.showChecklist}
+                    onToggleChecklist={toggleChecklist}
+                    onDeleteChecklist={handleDeleteChecklist}
+                    onAddItem={handleAddItem}
+                    onUpdateItem={handleUpdateItem}
+                    onDeleteItem={handleDeleteItem}
+                />
+
+            </div>
+
+        </Modal>
+    )
 }
 
 export default CardDetails
