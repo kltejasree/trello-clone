@@ -42,7 +42,7 @@ const ChecklistSection = ({
         return (
           <div key={checklist.id} className="mt-6">
 
-            {/* Checklist heading */}
+           
 
             <div className="flex justify-between items-center">
 
@@ -66,7 +66,7 @@ const ChecklistSection = ({
 
               </div>
 
-              {/* Delete checklist */}
+             
 
               <Popover
                 trigger="click"
@@ -112,14 +112,14 @@ const ChecklistSection = ({
 
             </div>
 
-            {/* Checklist content */}
+          
 
             {isOpen && (
               <>
 
                 <ProgressBar val={progress} />
 
-                {/* Checklist items */}
+             
 
                 <div className="mt-3">
 
@@ -138,7 +138,7 @@ const ChecklistSection = ({
 
                 </div>
 
-                {/* Add item button */}
+          
 
                 <div className="mt-3">
 
@@ -155,7 +155,7 @@ const ChecklistSection = ({
 
                 </div>
 
-                {/* Add item input */}
+             
 
                 {enableAddItem === checklist.id && (
                   <AddCheckItem

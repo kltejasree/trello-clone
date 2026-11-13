@@ -1,23 +1,54 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useReducer} from 'react'
 import {Card} from 'antd'
 import { getAllBoards } from '../api/Boards'
 import CreateBoard from './CreateBoard'
 import {Button, Popover} from 'antd'
 import {Link} from 'react-router-dom'
 
+const initialState = {
+  allBoards: [],
+  open: false
+}
 
+const boardsReducer = (state, action) => {
+  switch(action.type) {
+    case "addBoards":
+      return {
+        ...state,
+        allBoards: action.payload
+      }
+    
+    case "openPopover":
+      return {
+        ...state,
+        open: true
+      }
+
+    case "closePopOver":
+      return {
+        ...state,
+        open: false
+      }
+
+    default:
+      return state
+
+
+
+  }
+}
 
 const Board = () => {
-    const [allBoards, setAllBoards] = useState([])
-    const [showCreateCard, setShowCreateCard] = useState(false)
-    const [open, setOpen] = useState(false)
-    console.log(showCreateCard)
-    console.log(allBoards)
+    const [state, dispatch] = useReducer(boardsReducer, initialState)
+  
 
     useEffect(() => {
         const AllBoards = async function() {
             const allBoarddata = await getAllBoards();
-            setAllBoards(allBoarddata)
+            dispatch({
+              type: "addBoards",
+              payload: allBoarddata
+            })
         }
         AllBoards();
 
@@ -33,7 +64,7 @@ const Board = () => {
     <>
     <h4 className = "text-2xl text-center my-10">Trello Workspace</h4>
     <div className="flex gap-4 flex-wrap justify-center">
-      {allBoards.map((board) => (
+      {state.allBoards.map((board) => (
         <Link to={`/boards/${board.id}`}>
           <Card
             key={board.id}
@@ -69,15 +100,19 @@ const Board = () => {
 
 
       <Popover 
-        content = {<CreateBoard onClose = {() => setOpen(false)}/>}
+        content = {<CreateBoard onClose = {() => dispatch({type: "closePopOver"})}/>}
         trigger="click"
         placement="button"
-        open = {open}
-        onOpenChange = {handleOpenChange}
+        open={state.open}
+        onOpenChange={(newOpen) => {
+          dispatch({
+            type: newOpen ? "openPopover" : "closePopover"
+          })
+        }}
         
         >
       <div className = "">
-        <div onClick = {() => setShowCreateCard(!showCreateCard)} className = "w-55 h-40 bg-gray-300 rounded-[10px] text-center pt-[25%]">Create new board</div>
+        <div className = "w-55 h-40 bg-gray-300 rounded-[10px] text-center pt-[25%]">Create new board</div>
       </div>
 
       </Popover>
