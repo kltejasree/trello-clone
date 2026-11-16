@@ -1,259 +1,331 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+
 import { getBoardById } from '../api/Boards'
-import { getAllLists, CreateList } from '../api/List'
-import { Button, Popover } from 'antd'
+import { getAllLists, CreateList, updateList } from '../api/List'
 import { createCard } from '../api/Cards'
+
+import { Button, Popover } from 'antd'
 import Cards from './Cards'
 import DeleteList from './DeleteList'
-import { updateList } from '../api/List'
 
+import {
+    setBoard,
+    setAllLists
+} from '../redux/features/boardList/boardListSlice'
 
 
 const BoardLists = () => {
-    const { boardId } = useParams();
 
-    const [board, setBoard] = useState(null);
-    const [allLists, setAllLists] = useState([]);
-    const [selectedListId, setSelectedListId] = useState(null);
-    const [addList, setAddList] = useState(false);
-    const [listName, setListName] = useState('');
-    const [cardName, setCardName] = useState('');
-    const [cardCount, setCardCount] = useState(0);
+    const { boardId } = useParams()
+
+    const dispatch = useDispatch()
+
+    // Getting data from Redux store
+    const { board, allLists } = useSelector((state) => state.boardLists)
+
+    // Local UI states
+    const [selectedListId, setSelectedListId] = useState(null)
+    const [addList, setAddList] = useState(false)
+    const [listName, setListName] = useState('')
+    const [cardName, setCardName] = useState('')
+    const [cardCount, setCardCount] = useState(0)
     const [openPopoverListId, setOpenPopoverListId] = useState(null)
     const [editEnable, setEditEnable] = useState(null)
-    console.log(editEnable)
 
 
-    const hide = () => {
-        setOpen(false);
-    };
-
-    const handleOpenChange = (newOpen) => {
-        setOpen(newOpen);
-    };
-
+    // Fetch board details
     useEffect(() => {
+
         const fetchBoard = async () => {
-            const data = await getBoardById(boardId);
-            setBoard(data);
-        };
+            const data = await getBoardById(boardId)
+            dispatch(setBoard(data))
+        }
 
-        fetchBoard();
-    }, [boardId]);
+        fetchBoard()
 
-   
+    }, [boardId, dispatch])
+
+
+    // Fetch all lists
     const fetchLists = async () => {
-        const data = await getAllLists(boardId);
-        setAllLists(data);
-    };
+        const data = await getAllLists(boardId)
+        dispatch(setAllLists(data))
+    }
+
 
     useEffect(() => {
-        fetchLists();
+        fetchLists()
     }, [boardId])
-    
 
+
+    // Add card section
     function openAddCard(listId) {
-        setSelectedListId(listId);
+        setSelectedListId(listId)
     }
 
     function closeAddCard() {
-        setSelectedListId(null);
-        setCardName('');
+        setSelectedListId(null)
+        setCardName('')
     }
 
+
+    // Add list section
     function addListEnable() {
-        setAddList(!addList);
+        setAddList(!addList)
     }
 
     function addListName(e) {
-        setListName(e.target.value);
+        setListName(e.target.value)
     }
 
     function closeAddList() {
-        setAddList(false);
-        setListName('');
+        setAddList(false)
+        setListName('')
     }
 
+
+    // Create a new list
     async function addListToLists() {
+
         if (listName.trim() !== '') {
-            await CreateList(listName.trim(), boardId);
 
-            const data = await getAllLists(boardId);
-            setAllLists(data);
+            await CreateList(listName.trim(), boardId)
 
-            setAddList(false);
-            setListName('');
+            await fetchLists()
+
+            setAddList(false)
+            setListName('')
         }
     }
 
+
+    // Card name
     function addCardName(e) {
-        setCardName(e.target.value);
+        setCardName(e.target.value)
     }
 
+
+    // Create a new card
     async function createcard() {
+
         if (cardName.trim() !== '' && selectedListId) {
-            await createCard(selectedListId, cardName.trim());
 
-            setCardCount(prevCount => prevCount + 1);
+            await createCard(selectedListId, cardName.trim())
 
-            setCardName('');
-            closeAddCard();
+            setCardCount(prevCount => prevCount + 1)
+
+            setCardName('')
+
+            closeAddCard()
         }
     }
 
+
+    // Update list name
     async function saveListName(listId) {
-        if(listName.trim() !== ''){
-            await updateList(listId, listName.trim());
-            await fetchLists();
-            setEditEnable(null);
-            setListName('');
+
+        if (listName.trim() !== '') {
+
+            await updateList(listId, listName.trim())
+
+            await fetchLists()
+
+            setEditEnable(null)
+            setListName('')
         }
     }
+
 
     return (
         <>
-        <div
-        className="min-h-screen w-full p-5"
-        style={{
-            backgroundImage: board?.prefs?.backgroundImage
-                ? `url(${board.prefs.backgroundImage})`
-                : 'none',
-            backgroundColor: board?.prefs?.backgroundColor || '#2b2b2e',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundAttachment: 'fixed'
-        }}
-        >
-        <div className="flex flex-wrap items-start gap-3" >
+            <div
+                className="min-h-screen w-full p-5"
+                style={{
+                    backgroundImage: board?.prefs?.backgroundImage
+                        ? `url(${board.prefs.backgroundImage})`
+                        : 'none',
 
-            {allLists.map((list) => (
+                    backgroundColor: board?.prefs?.backgroundColor || '#2b2b2e',
 
-                <div
-                    key={list.id}
-                    className="w-[280px] min-h-[120px] bg-white rounded-lg p-3 shadow-sm"
-                >
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundAttachment: 'fixed'
+                }}
+            >
 
-                    <div className="flex justify-between items-center mb-4">
-                        <p onDoubleClick = {() => {setEditEnable(list.id); setListName(list.name)}} className="font-semibold text-gray-800">
-                            {editEnable === list.id ? <input type = "text" value = {listName} onChange = {(e) => setListName(e.target.value)} onKeyDown={(e) => {if(e.key === 'Enter') { saveListName(list.id)}}}></input> : list.name}
-                        </p>
+                <div className="flex flex-wrap items-start gap-3">
 
-                        <Popover
-                            content={<DeleteList listId = {list.id} refreshLists = {fetchLists}/>}
-        
-                            trigger="click"
-                            open={openPopoverListId === list.id}
-                            onOpenChange={(newOpen) => {
-                                setOpenPopoverListId(newOpen ? list.id : null);
-                            }}
+                    {allLists.map((list) => (
+
+                        <div
+                            key={list.id}
+                            className="w-[280px] min-h-[120px] bg-white rounded-lg p-3 shadow-sm"
                         >
-                        
 
+                            {/* List header */}
+                            <div className="flex justify-between items-center mb-4">
 
-                        <button className="text-gray-600 hover:bg-gray-200 px-2 rounded">
-                            ...
-                        </button>
-
-                        </Popover>
-                    </div>
-
-                    {/* Display existing cards */}
-                    <Cards
-                        listId={list.id}
-                        cardsCount={cardCount}
-                    />
-
-                    {selectedListId === list.id ? (
-
-                        <div className="flex flex-col gap-3 mt-3">
-
-                            <input
-                                type="text"
-                                placeholder="Enter a title or paste a link"
-                                value={cardName}
-                                onChange={addCardName}
-                                className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:border-blue-500"
-                            />
-
-                            <div className="flex items-center gap-2">
-
-                                <Button
-                                    type="primary"
-                                    onClick={createcard}
+                                <p
+                                    onDoubleClick={() => {
+                                        setEditEnable(list.id)
+                                        setListName(list.name)
+                                    }}
+                                    className="font-semibold text-gray-800"
                                 >
-                                    Add Card
-                                </Button>
 
-                                <Button onClick={closeAddCard}>
-                                    x
-                                </Button>
+                                    {editEnable === list.id ? (
+
+                                        <input
+                                            type="text"
+                                            value={listName}
+                                            onChange={(e) => setListName(e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    saveListName(list.id)
+                                                }
+                                            }}
+                                        />
+
+                                    ) : (
+
+                                        list.name
+
+                                    )}
+
+                                </p>
+
+
+                                {/* Delete list popover */}
+                                <Popover
+                                    content={
+                                        <DeleteList
+                                            listId={list.id}
+                                            refreshLists={fetchLists}
+                                        />
+                                    }
+                                    trigger="click"
+                                    open={openPopoverListId === list.id}
+                                    onOpenChange={(newOpen) => {
+                                        setOpenPopoverListId(
+                                            newOpen ? list.id : null
+                                        )
+                                    }}
+                                >
+
+                                    <button className="text-gray-600 hover:bg-gray-200 px-2 rounded">
+                                        ...
+                                    </button>
+
+                                </Popover>
 
                             </div>
 
+
+                            {/* Cards */}
+                            <Cards
+                                listId={list.id}
+                                cardsCount={cardCount}
+                            />
+
+
+                            {/* Add card */}
+                            {selectedListId === list.id ? (
+
+                                <div>
+
+                                    <input
+                                        type="text"
+                                        placeholder="Enter card name"
+                                        value={cardName}
+                                        onChange={addCardName}
+                                        className="border p-2 w-full rounded mb-2"
+                                    />
+
+                                    <div className="flex gap-2">
+
+                                        <Button
+                                            type="primary"
+                                            onClick={createcard}
+                                        >
+                                            Add Card
+                                        </Button>
+
+                                        <Button onClick={closeAddCard}>
+                                            X
+                                        </Button>
+
+                                    </div>
+
+                                </div>
+
+                            ) : (
+
+                                <button
+                                    onClick={() => openAddCard(list.id)}
+                                    className="text-gray-600 hover:bg-gray-200 w-full text-left p-2 rounded"
+                                >
+                                    + Add a card
+                                </button>
+
+                            )}
+
                         </div>
 
-                    ) : (
+                    ))}
 
-                        <button
-                            onClick={() => openAddCard(list.id)} 
-                            
-                            className="w-full text-left text-gray-600 hover:bg-gray-200 p-2 rounded-lg"
-                        >
-                            + Add a card
-                        </button>
 
-                    )}
+                    {/* Add another list */}
+                    <div className="w-[280px]">
 
-                </div>
+                        {addList ? (
 
-            ))}
+                            <div className="bg-white p-3 rounded-lg shadow-sm">
 
-            {addList ? (
+                                <input
+                                    type="text"
+                                    placeholder="Enter list name"
+                                    value={listName}
+                                    onChange={addListName}
+                                    className="border p-2 w-full rounded mb-2"
+                                />
 
-                <div className="w-[280px] min-h-[120px] bg-white rounded-lg p-3 shadow-sm">
+                                <div className="flex gap-2">
 
-                    <input
-                        type="text"
-                        placeholder="Enter list name..."
-                        value={listName}
-                        onChange={addListName}
-                        className="w-full p-3 border border-gray-300 rounded-lg outline-none focus:border-blue-500"
-                    />
+                                    <Button
+                                        type="primary"
+                                        onClick={addListToLists}
+                                    >
+                                        Add list
+                                    </Button>
 
-                    <div className="flex items-center gap-2 mt-2">
+                                    <Button onClick={closeAddList}>
+                                        X
+                                    </Button>
 
-                        <Button
-                            onClick={addListToLists}
-                            type="primary"
-                        >
-                            Add list
-                        </Button>
+                                </div>
 
-                        <Button onClick={closeAddList}>
-                            x
-                        </Button>
+                            </div>
+
+                        ) : (
+
+                            <button
+                                onClick={addListEnable}
+                                className="bg-white/30 hover:bg-white/50 text-white p-3 rounded-lg w-full text-left"
+                            >
+                                + Add another List
+                            </button>
+
+                        )}
 
                     </div>
 
                 </div>
 
-            ) : (
-
-                <button
-                    onClick={addListEnable}
-                    className="w-[280px] h-auto border border-gray-300 text-left text-black hover:bg-gray-200 p-2 rounded-lg"
-                >
-                    + Add another List
-                </button>
-
-            )}
-
-        </div>
-    </div>
+            </div>
         </>
-    );
-    
-};
+    )
+}
 
-export default BoardLists;
+export default BoardLists

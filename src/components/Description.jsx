@@ -22,6 +22,7 @@ const Description = () => {
         setStoreDescription(text)
         setDescription(text)
         setEnableMoreDescription(false)
+        
 
         setIsSaved(text !== '')
     }

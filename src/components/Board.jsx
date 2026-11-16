@@ -1,32 +1,36 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useReducer} from 'react'
 import {Card} from 'antd'
 import { getAllBoards } from '../api/Boards'
 import CreateBoard from './CreateBoard'
 import {Button, Popover} from 'antd'
 import {Link} from 'react-router-dom'
+import {useSelector, useDispatch} from 'react-redux'
+import { addBoards, openPopover, closePopover } from '../redux/features/board/boardSlice'
 
 
 
 const Board = () => {
-    const [allBoards, setAllBoards] = useState([])
-    const [showCreateCard, setShowCreateCard] = useState(false)
-    const [open, setOpen] = useState(false)
-    console.log(showCreateCard)
-    console.log(allBoards)
+    const {allBoards, open} = useSelector((state) => state.boardSlice)
+    const dispatch = useDispatch()
+  
 
     useEffect(() => {
         const AllBoards = async function() {
             const allBoarddata = await getAllBoards();
-            setAllBoards(allBoarddata)
+            dispatch(addBoards(allBoarddata))
         }
         AllBoards();
 
-    },[])
+    },[dispatch])
 
     const handleOpenChange = (newOpen) => {
-        setOpen(newOpen)
-
+    if(newOpen) {
+        dispatch(openPopover())
     }
+    else {
+        dispatch(closePopover())
+    }
+}
 
 
   return (
@@ -69,15 +73,15 @@ const Board = () => {
 
 
       <Popover 
-        content = {<CreateBoard onClose = {() => setOpen(false)}/>}
+        content = {<CreateBoard onClose = {() => dispatch(closePopover())} />}
         trigger="click"
         placement="button"
-        open = {open}
-        onOpenChange = {handleOpenChange}
+        open={open}
+        onOpenChange={handleOpenChange}
         
         >
       <div className = "">
-        <div onClick = {() => setShowCreateCard(!showCreateCard)} className = "w-55 h-40 bg-gray-300 rounded-[10px] text-center pt-[25%]">Create new board</div>
+        <div className = "w-55 h-40 bg-gray-300 rounded-[10px] text-center pt-[25%]">Create new board</div>
       </div>
 
       </Popover>
