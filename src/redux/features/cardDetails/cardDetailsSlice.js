@@ -1,8 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
+    //stores all checklists
     checklists: [],
+    //store items of checklists
     checkItems: {},
+    //store ID's of expanded checklists
     showChecklist: [],
     openItemPopover: null
 }
@@ -36,10 +39,11 @@ const cardDetailsSlice = createSlice({
         removeChecklist: (state, action) => {
             const checklistId = action.payload
 
+            //removes checklist
             state.checklists = state.checklists.filter(
                 (checklist) => checklist.id !== checklistId
             )
-
+            //removes ID's from showChecklist
             state.showChecklist = state.showChecklist.filter(
                 (id) => id !== checklistId
             )

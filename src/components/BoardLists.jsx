@@ -25,7 +25,7 @@ const BoardLists = () => {
     // Getting data from Redux store
     const { board, allLists } = useSelector((state) => state.boardLists)
 
-    // Local UI states
+    // Local UI states mainly control the UI of the component
     const [selectedListId, setSelectedListId] = useState(null)
     const [addList, setAddList] = useState(false)
     const [listName, setListName] = useState('')
@@ -164,7 +164,6 @@ const BoardLists = () => {
                             className="w-[280px] min-h-[120px] bg-white rounded-lg p-3 shadow-sm"
                         >
 
-                            {/* List header */}
                             <div className="flex justify-between items-center mb-4">
 
                                 <p
