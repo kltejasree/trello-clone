@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Popover, Button } from 'antd'
+import { useState } from 'react'
+import { Popover, Button, Input } from 'antd'
 import { CheckSquareOutlined } from '@ant-design/icons'
 
 const AddChecklist = ({ onAddChecklist }) => {
@@ -20,22 +20,19 @@ const AddChecklist = ({ onAddChecklist }) => {
     <div className="w-64 flex flex-col gap-3">
 
       <div className="flex justify-between items-center">
-        <h4>Add checklist</h4>
+        <h4 className = "font-semibold text-[18px]">Add checklist</h4>
 
-        <button onClick={() => setOpen(false)}>
+        <Button className = "font-semibold! text-[18px]!" onClick={() => setOpen(false)}>
           ×
-        </button>
+        </Button>
       </div>
 
       <div>
-        <h5>Title</h5>
+        <h5 className = "font-semibold">Title</h5>
 
-        <input
-          type="text"
-          value={checkListTitle}
-          onChange={(e) => setCheckListTitle(e.target.value)}
-          className="border border-gray-300 rounded p-2 w-full"
-        />
+        
+        <Input placeholder="" value={checkListTitle}
+          onChange={(e) => setCheckListTitle(e.target.value)}/>
       </div>
 
       <Button type="primary" onClick={handleAdd}>
@@ -53,10 +50,10 @@ const AddChecklist = ({ onAddChecklist }) => {
       onOpenChange={setOpen}
       placement="bottom"
     >
-      <button className="border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white hover:bg-gray-100">
+      <Button className="border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white hover:bg-gray-100">
         <CheckSquareOutlined />
         <span className="ml-1.5">Checklist</span>
-      </button>
+      </Button>
     </Popover>
   )
 }

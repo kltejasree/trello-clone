@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { getAllCards, archieveCard, updateCard } from '../api/Cards'
 import { FaEdit } from 'react-icons/fa'
 import {FaBoxArchive} from 'react-icons/fa6'
@@ -71,7 +71,7 @@ const Cards = ({ listId, cardsCount }) => {
 
                 <div className="flex items-center gap-2">
 
-                  <input
+                  <Input
                     type="checkbox"
                     name="complete"
                     checked={completedCards.includes(card.id)}

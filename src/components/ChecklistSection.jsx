@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Popover, Button } from 'antd'
 import { FaChevronDown, FaChevronRight } from 'react-icons/fa'
 
@@ -80,9 +80,9 @@ const ChecklistSection = ({
                     <div className="flex justify-between">
                       <h4>{`Delete ${checklist.name}`}</h4>
 
-                      <button onClick={() => setDeleteOpen(null)}>
+                      <Button onClick={() => setDeleteOpen(null)}>
                         x
-                      </button>
+                      </Button>
                     </div>
 
                     <p>
@@ -104,9 +104,9 @@ const ChecklistSection = ({
                 }
               >
 
-                <button className="border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white hover:bg-gray-100">
+                <Button className="border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white hover:bg-gray-100">
                   Delete
-                </button>
+                </Button>
 
               </Popover>
 
@@ -138,11 +138,11 @@ const ChecklistSection = ({
 
                 </div>
 
-                {/* Add item button */}
+                {/* Add item Button */}
 
                 <div className="mt-3">
 
-                  <button
+                  <Button
                     onClick={() => setEnableAddItem(
                       enableAddItem === checklist.id
                         ? null
@@ -151,7 +151,7 @@ const ChecklistSection = ({
                     className="border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white hover:bg-gray-100"
                   >
                     Add Item
-                  </button>
+                  </Button>
 
                 </div>
 

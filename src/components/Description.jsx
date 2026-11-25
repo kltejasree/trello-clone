@@ -1,6 +1,9 @@
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { FaBars, FaChevronDown, FaChevronRight } from 'react-icons/fa'
+import {Input} from 'antd';
+
+const {TextArea} = Input;
 
 const Description = () => {
 
@@ -95,7 +98,7 @@ const Description = () => {
                             <>
                                 <div className="ml-8 border border-gray-400 rounded-md overflow-hidden focus-within:border-blue-500">
 
-                                    <textarea
+                                    <TextArea
                                         autoFocus={enableMoreDescription}
                                         rows={enableMoreDescription ? 8 : 2}
                                         value={description}

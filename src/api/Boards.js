@@ -1,7 +1,5 @@
 import TrelloApi from "./TrelloApi";
 
-import React from 'react'
-
 export async function createBoard(boardName, color) {
     const api = await TrelloApi.post('/boards', null, {
         params: {

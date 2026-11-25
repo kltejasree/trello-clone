@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { getBoardById } from '../api/Boards'
 import { getAllLists, CreateList } from '../api/List'
-import { Button, Popover } from 'antd'
+import { Input, Button, Popover } from 'antd'
 import { createCard } from '../api/Cards'
 import Cards from './Cards'
-import DeleteList from './DeleteList'
 import { updateList } from '../api/List'
+import ArchiveList from './ArchieveList'
 
 
 
@@ -24,19 +24,11 @@ const BoardLists = () => {
     const [editEnable, setEditEnable] = useState(null)
     console.log(editEnable)
 
-
-    const hide = () => {
-        setOpen(false);
-    };
-
-    const handleOpenChange = (newOpen) => {
-        setOpen(newOpen);
-    };
-
     useEffect(() => {
         const fetchBoard = async () => {
             const data = await getBoardById(boardId);
             setBoard(data);
+    
         };
 
         fetchBoard();
@@ -131,16 +123,16 @@ const BoardLists = () => {
 
                 <div
                     key={list.id}
-                    className="w-[280px] min-h-[120px] bg-white rounded-lg p-3 shadow-sm"
+                    className="w-70 min-h-30 bg-white rounded-lg p-3 shadow-sm"
                 >
 
                     <div className="flex justify-between items-center mb-4">
                         <p onDoubleClick = {() => {setEditEnable(list.id); setListName(list.name)}} className="font-semibold text-gray-800">
-                            {editEnable === list.id ? <input type = "text" value = {listName} onChange = {(e) => setListName(e.target.value)} onKeyDown={(e) => {if(e.key === 'Enter') { saveListName(list.id)}}}></input> : list.name}
+                            {editEnable === list.id ? <Input type = "text" value = {listName} onChange = {(e) => setListName(e.target.value)} onKeyDown={(e) => {if(e.key === 'Enter') { saveListName(list.id)}}}></Input> : list.name}
                         </p>
 
                         <Popover
-                            content={<DeleteList listId = {list.id} refreshLists = {fetchLists}/>}
+                            content={<ArchiveList listId = {list.id} refreshLists = {fetchLists}/>}
         
                             trigger="click"
                             open={openPopoverListId === list.id}
@@ -168,7 +160,7 @@ const BoardLists = () => {
 
                         <div className="flex flex-col gap-3 mt-3">
 
-                            <input
+                            <Input
                                 type="text"
                                 placeholder="Enter a title or paste a link"
                                 value={cardName}
@@ -185,7 +177,7 @@ const BoardLists = () => {
                                     Add Card
                                 </Button>
 
-                                <Button onClick={closeAddCard}>
+                                <Button onClick={closeAddCard} className = "font-bold!">
                                     x
                                 </Button>
 
@@ -211,9 +203,9 @@ const BoardLists = () => {
 
             {addList ? (
 
-                <div className="w-[280px] min-h-[120px] bg-white rounded-lg p-3 shadow-sm">
+                <div className="w-70 min-h-30 bg-white rounded-lg p-3 shadow-sm">
 
-                    <input
+                    <Input
                         type="text"
                         placeholder="Enter list name..."
                         value={listName}
@@ -242,7 +234,7 @@ const BoardLists = () => {
 
                 <button
                     onClick={addListEnable}
-                    className="w-[280px] h-auto border border-gray-300 text-left text-black hover:bg-gray-200 p-2 rounded-lg"
+                    className="w-70 h-auto border border-gray-300 text-left text-black hover:bg-gray-200 p-2 rounded-lg"
                 >
                     + Add another List
                 </button>

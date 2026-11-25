@@ -1,18 +1,14 @@
-import React, {useState, useEffect} from 'react'
+import {useState, useEffect} from 'react'
 import {Card} from 'antd'
 import { getAllBoards } from '../api/Boards'
 import CreateBoard from './CreateBoard'
-import {Button, Popover} from 'antd'
+import {Popover} from 'antd'
 import {Link} from 'react-router-dom'
-
-
 
 const Board = () => {
     const [allBoards, setAllBoards] = useState([])
     const [showCreateCard, setShowCreateCard] = useState(false)
     const [open, setOpen] = useState(false)
-    console.log(showCreateCard)
-    console.log(allBoards)
 
     useEffect(() => {
         const AllBoards = async function() {
@@ -27,7 +23,6 @@ const Board = () => {
         setOpen(newOpen)
 
     }
-
 
   return (
     <>
@@ -59,7 +54,7 @@ const Board = () => {
             <div
               id={board.id}
               className="text-black py-2 pl-2 bg-white cursor-pointer"
-              onClick={(e) => console.log(e.currentTarget.id)}
+             
             >
               {board.name}
             </div>
@@ -74,8 +69,7 @@ const Board = () => {
         placement="button"
         open = {open}
         onOpenChange = {handleOpenChange}
-        
-        >
+      >
       <div className = "">
         <div onClick = {() => setShowCreateCard(!showCreateCard)} className = "w-55 h-40 bg-gray-300 rounded-[10px] text-center pt-[25%]">Create new board</div>
       </div>

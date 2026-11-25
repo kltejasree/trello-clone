@@ -1,4 +1,4 @@
-import React from 'react'
+import {Button} from 'antd';
 import {
   PlusOutlined,
   TagOutlined,
@@ -12,27 +12,27 @@ const CardActions = ({ onAddChecklist }) => {
   return (
     <div className="flex gap-3 mt-5 pl-8 flex-wrap">
 
-      <button className="border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white hover:bg-gray-100">
+      <Button>
         <PlusOutlined />
         <span className="ml-1.5">Add</span>
-      </button>
+      </Button>
 
-      <button className="border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white hover:bg-gray-100">
+      <Button>
         <TagOutlined />
         <span className="ml-1.5">Labels</span>
-      </button>
+      </Button>
 
-      <button className="border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white hover:bg-gray-100">
+      <Button>
         <ClockCircleOutlined />
         <span className="ml-1.5">Dates</span>
-      </button>
+      </Button>
 
       <AddChecklist onAddChecklist={onAddChecklist} />
 
-      <button className="border border-gray-300 rounded-md px-3 py-1.5 text-sm bg-white hover:bg-gray-100">
+      <Button>
         <UserAddOutlined />
         <span className="ml-1.5">Members</span>
-      </button>
+      </Button>
 
     </div>
   )

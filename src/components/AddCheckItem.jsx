@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
+import {Button, Input} from 'antd';
 
 const AddCheckItem = ({ onAdd, onCancel }) => {
 
@@ -15,7 +16,7 @@ const AddCheckItem = ({ onAdd, onCancel }) => {
   return (
     <div className="mt-3">
 
-      <input
+      <Input
         type="text"
         placeholder="Add an item"
         value={itemTitle}
@@ -25,19 +26,19 @@ const AddCheckItem = ({ onAdd, onCancel }) => {
 
       <div className="flex gap-2 mt-3">
 
-        <button
+        <Button
           onClick={handleSubmit}
           className="bg-blue-600 hover:bg-blue-700 text-white rounded px-4 py-1.5"
         >
           Add
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={onCancel}
           className="text-gray-700 hover:bg-gray-100 rounded px-4 py-1.5"
         >
           Cancel
-        </button>
+        </Button>
 
       </div>
 
