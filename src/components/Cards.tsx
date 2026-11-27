@@ -6,17 +6,30 @@ import {FaBoxArchive} from 'react-icons/fa6'
 import { Popover, Input, Button } from 'antd'
 import CardDetails from './CardDetails'
 
-const Cards = ({ listId, cardsCount }) => {
+interface listsProps {
+  listId: string;
+  cardsCount: number
+}
 
-  const [cardDetails, setCardDetails] = useState([])
-  const [hoverState, setHoverState] = useState(null)
-  const [editCard, setEditCard] = useState(null)
-  const [editedCardName, setEditedCardName] = useState('')
-  const [completedCards, setCompletedCards] = useState([])
-  const [selectedCard, setSelectedCard] = useState(null)
+interface cardsProps {
+  id: string;
+  name: string;
+  
+}
+
+
+
+const Cards = ({ listId, cardsCount}: listsProps) => {
+
+  const [cardDetails, setCardDetails] = useState<cardsProps[]>([])
+  const [hoverState, setHoverState] = useState<string | null>(null)
+  const [editCard, setEditCard] = useState<string | null>(null)
+  const [editedCardName, setEditedCardName] = useState<string>('')
+  const [completedCards, setCompletedCards] = useState<string []>([])
+  const [selectedCard, setSelectedCard] = useState<cardsProps | null>(null)
 
   const fetchCards = async function () {
-    const data = await getAllCards(listId)
+    const data: cardsProps[] = await getAllCards(listId)
     setCardDetails(data)
   }
 
@@ -24,24 +37,24 @@ const Cards = ({ listId, cardsCount }) => {
     fetchCards()
   }, [listId, cardsCount])
 
-  const handleEdit = (card) => {
+  const handleEdit = (card: cardsProps) => {
     setEditCard(card.id)
     setEditedCardName(card.name)
   }
 
-  const handleSave = async (cardId) => {
+  const handleSave = async (cardId: string) => {
     await updateCard(cardId, editedCardName)
     await fetchCards()
     setEditCard(null)
   }
 
-  const handleArchive = async (cardId) => {
+  const handleArchive = async (cardId: string) => {
     await archieveCard(cardId)
     await fetchCards()
     setEditCard(null)
   }
 
-  const handleComplete = (cardId) => {
+  const handleComplete = (cardId: string) => {
     if (completedCards.includes(cardId)) {
       let newArray = [...completedCards]
       let index = newArray.indexOf(cardId)
@@ -54,7 +67,7 @@ const Cards = ({ listId, cardsCount }) => {
 
   return (
     <>
-      {cardDetails.map((card) => (
+      {cardDetails.map((card: cardsProps) => (
 
         <div key={card.id}>
 

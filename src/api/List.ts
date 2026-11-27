@@ -1,6 +1,6 @@
-import TrelloApi from "./TrelloApi";
+import TrelloApi from "./TrelloApi.js";
 
-export async function CreateList(listName, BoardId) {
+export async function CreateList(listName: String, BoardId: String) {
     const api = await TrelloApi.post('lists', null, {
         params: {
             name: listName,
@@ -11,12 +11,12 @@ export async function CreateList(listName, BoardId) {
     return api.data;
 }
 
-export async function getAllLists(boardId) {
+export async function getAllLists(boardId: String) {
     let api = await TrelloApi.get(`/boards/${boardId}/lists`)
     return api.data;
 }
 
-export async function archiveList(listId) {
+export async function archiveList(listId: String) {
     const api = await TrelloApi.put(`lists/${listId}/closed`, null, {
         params: {
             value: true,
@@ -27,7 +27,7 @@ export async function archiveList(listId) {
 }
 
 
-export async function updateList(listId, listName) {
+export async function updateList(listId: String, listName: String) {
     const api = await TrelloApi.put(`/lists/${listId}`, null, {
         params: {
             name: listName

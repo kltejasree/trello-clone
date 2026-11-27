@@ -18,14 +18,8 @@ const App = () => {
       
 
     </Routes>
-    <Cards />
-
     
 
-    
-
-    
-    
     
   </> 
 

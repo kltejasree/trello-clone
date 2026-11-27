@@ -1,6 +1,6 @@
 import TrelloApi from "./TrelloApi";
 
-export async function createBoard(boardName, color) {
+export async function createBoard(boardName: String, color: String) {
     const api = await TrelloApi.post('/boards', null, {
         params: {
             name: boardName,
@@ -17,12 +17,12 @@ export async function getAllBoards() {
     return api.data;
 }
 
-export async function getBoardById(id) {
+export async function getBoardById(id: String) {
     const api = await TrelloApi.get(`/boards/${id}`)
     return api.data;
 }
 
-export async function deleteBoard(id) {
+export async function deleteBoard(id: String) {
     const api = await TrelloApi.delete(`/boards/${id}`)
     return api.data;
 }

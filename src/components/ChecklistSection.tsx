@@ -6,6 +6,39 @@ import ProgressBar from './ProgressBar'
 import ChecklistItem from './Checklistitem'
 import AddCheckItem from './AddCheckItem'
 
+type ChecklistType = {
+  id: string;
+  name: string;
+}
+
+type ChecklistItemType = {
+  id: string;
+  name: string;
+  state: 'complete' | 'incomplete';
+}
+
+interface ChecklistSectionProps {
+  checklists: ChecklistType[];
+  checkItems: Record<string, ChecklistItemType[]>;
+  showChecklist: string[];
+
+  onToggleChecklist: (checklistId: string) => Promise<void>;
+  onDeleteChecklist: (checklistId: string) => Promise<void>;
+  onAddItem: (
+    checklistId: string,
+    itemTitle: string
+  ) => Promise<void>;
+  onUpdateItem: (
+    checklistId: string,
+    itemId: string,
+    state: 'complete' | 'incomplete'
+  ) => Promise<void>;
+  onDeleteItem: (
+    checklistId: string,
+    itemId: string
+  ) => Promise<void>;
+}
+
 const ChecklistSection = ({
   checklists,
   checkItems,
@@ -15,10 +48,10 @@ const ChecklistSection = ({
   onAddItem,
   onUpdateItem,
   onDeleteItem
-}) => {
+}: ChecklistSectionProps) => {
 
-  const [enableAddItem, setEnableAddItem] = useState(null)
-  const [deleteOpen, setDeleteOpen] = useState(null)
+  const [enableAddItem, setEnableAddItem] = useState<string | null>(null)
+  const [deleteOpen, setDeleteOpen] = useState<string | null>(null)
 
   return (
     <div className="mt-8 pl-8">
@@ -71,7 +104,7 @@ const ChecklistSection = ({
               <Popover
                 trigger="click"
                 open={deleteOpen === checklist.id}
-                onOpenChange={(newOpen) => {
+                onOpenChange={(newOpen: boolean) => {
                   setDeleteOpen(newOpen ? checklist.id : null)
                 }}
                 content={

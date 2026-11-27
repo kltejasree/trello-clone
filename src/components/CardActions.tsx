@@ -8,7 +8,11 @@ import {
 
 import AddChecklist from './Addchecklist'
 
-const CardActions = ({ onAddChecklist }) => {
+interface addCheckListProps {
+  onAddChecklist: (checkListTitle: string) => Promise<void>
+}
+
+const CardActions = ({ onAddChecklist }: addCheckListProps) => {
   return (
     <div className="flex gap-3 mt-5 pl-8 flex-wrap">
 

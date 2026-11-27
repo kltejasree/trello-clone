@@ -1,8 +1,24 @@
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Popover } from 'antd'
 
-const ChecklistItem = ({ item, onUpdate, onDelete }) => {
+type ChecklistItemType = {
+  id: string;
+  name: string;
+  state: 'complete' | 'incomplete'
+}
+
+interface ChecklistItemProps {
+  item: ChecklistItemType;
+  onUpdate: (
+    itemId: string,
+    state: 'complete' | 'incomplete'
+  ) => Promise<void>;
+  onDelete: (itemId: string) => Promise<void>;
+}
+
+
+const ChecklistItem = ({ item, onUpdate, onDelete }: ChecklistItemProps) => {
 
   const [open, setOpen] = useState(false)
 
@@ -10,11 +26,11 @@ const ChecklistItem = ({ item, onUpdate, onDelete }) => {
     setOpen(false)
   }
 
-  const handleOpenChange = (newOpen) => {
+  const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen)
   }
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onUpdate(
       item.id,
       e.target.checked ? 'complete' : 'incomplete'

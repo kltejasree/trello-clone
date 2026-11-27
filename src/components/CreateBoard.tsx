@@ -2,18 +2,22 @@ import { useState } from 'react'
 import { createBoard } from '../api/Boards'
 import { Button, Input } from 'antd'
 
-const CreateBoard = ({ onClose }) => {
+interface createBoardProps {
+    onClose: () => void;
+}
+
+const CreateBoard = ( {onClose}: createBoardProps ) => {
     const [color, setColor] = useState('#3B82F6')
     const [trelloColor, setTrelloColor] = useState('blue')
     const [boardTitle, setBoardTitle] = useState('')
 
-    function storeTitle(e) {
+    function storeTitle(e: React.ChangeEvent<HTMLInputElement>) {
         let val = e.target.value
         setBoardTitle(val)
     }
 
     const handleCreateBoard = async function () {
-        let finalBoardTitle = boardTitle.trim('')
+        let finalBoardTitle = boardTitle.trim()
         if (finalBoardTitle.length !== 0) {
             await createBoard(finalBoardTitle, trelloColor)
             onClose();

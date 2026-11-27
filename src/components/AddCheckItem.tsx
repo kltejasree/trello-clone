@@ -1,7 +1,14 @@
 import { useState } from 'react'
 import {Button, Input} from 'antd';
 
-const AddCheckItem = ({ onAdd, onCancel }) => {
+
+
+interface addCheckItemProp {
+  onAdd: (itemTitle: string) => Promise<void>;
+  onCancel: () => void;
+}
+
+const AddCheckItem = ({ onAdd, onCancel }: addCheckItemProp) => {
 
   const [itemTitle, setItemTitle] = useState('')
 

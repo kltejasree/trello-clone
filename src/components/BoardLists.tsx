@@ -9,24 +9,40 @@ import { updateList } from '../api/List'
 import ArchiveList from './ArchieveList'
 
 
+interface boardType {
+    id: string;
+    name: string;
+    prefs: {
+    backgroundImage?: string;
+    backgroundColor?: string;
+    }
+
+}
+
+interface listType {
+    id: string;
+    name: string;
+
+}
 
 const BoardLists = () => {
-    const { boardId } = useParams();
+    const { boardId } = useParams<{boardId: string}>();
 
-    const [board, setBoard] = useState(null);
-    const [allLists, setAllLists] = useState([]);
-    const [selectedListId, setSelectedListId] = useState(null);
-    const [addList, setAddList] = useState(false);
-    const [listName, setListName] = useState('');
-    const [cardName, setCardName] = useState('');
-    const [cardCount, setCardCount] = useState(0);
-    const [openPopoverListId, setOpenPopoverListId] = useState(null)
-    const [editEnable, setEditEnable] = useState(null)
+    const [board, setBoard] = useState<boardType | null>(null);
+    const [allLists, setAllLists] = useState<listType[]>([]);
+    const [selectedListId, setSelectedListId] = useState<string | null>(null);
+    const [addList, setAddList] = useState<boolean>(false);
+    const [listName, setListName] = useState<string>('');
+    const [cardName, setCardName] = useState<string>('');
+    const [cardCount, setCardCount] = useState<number>(0);
+    const [openPopoverListId, setOpenPopoverListId] = useState<string | null>(null)
+    const [editEnable, setEditEnable] = useState<string | null>(null)
     console.log(editEnable)
 
     useEffect(() => {
         const fetchBoard = async () => {
-            const data = await getBoardById(boardId);
+            if(!boardId) return
+            const data: boardType = await getBoardById(boardId);
             setBoard(data);
     
         };
@@ -36,6 +52,7 @@ const BoardLists = () => {
 
    
     const fetchLists = async () => {
+        if(!boardId) return
         const data = await getAllLists(boardId);
         setAllLists(data);
     };
@@ -45,7 +62,7 @@ const BoardLists = () => {
     }, [boardId])
     
 
-    function openAddCard(listId) {
+    function openAddCard(listId: string) {
         setSelectedListId(listId);
     }
 
@@ -58,7 +75,7 @@ const BoardLists = () => {
         setAddList(!addList);
     }
 
-    function addListName(e) {
+    function addListName(e: React.ChangeEvent<HTMLInputElement>) {
         setListName(e.target.value);
     }
 
@@ -69,6 +86,7 @@ const BoardLists = () => {
 
     async function addListToLists() {
         if (listName.trim() !== '') {
+            if(!boardId) return 
             await CreateList(listName.trim(), boardId);
 
             const data = await getAllLists(boardId);
@@ -79,7 +97,7 @@ const BoardLists = () => {
         }
     }
 
-    function addCardName(e) {
+    function addCardName(e: React.ChangeEvent<HTMLInputElement>) {
         setCardName(e.target.value);
     }
 
@@ -94,7 +112,7 @@ const BoardLists = () => {
         }
     }
 
-    async function saveListName(listId) {
+    async function saveListName(listId: string) {
         if(listName.trim() !== ''){
             await updateList(listId, listName.trim());
             await fetchLists();

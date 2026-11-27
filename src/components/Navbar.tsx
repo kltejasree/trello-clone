@@ -1,10 +1,15 @@
-
+import {useState} from 'react'
 import { FaSearch } from 'react-icons/fa'
 import logo from '../assets/logo.png'
 import { Button, Popover, Input } from 'antd'
 import CreateBoard from './CreateBoard'
 
 const Navbar = () => {
+  const [open, setOpen] = useState(false)
+  const handleOpenChange = (newOpen: boolean) => {
+        setOpen(newOpen)
+
+    }
   return (
     <div className="w-full flex justify-between items-center px-6 py-3 border-b border-gray-300 shadow-sm">
 
@@ -27,9 +32,11 @@ const Navbar = () => {
         />
 
         <Popover
-          content={<CreateBoard />}
+          content={<CreateBoard onClose = {() => setOpen(false)}/>}
           trigger="click"
           placement="bottomRight"
+          open = {open}
+          onOpenChange = {handleOpenChange}
         >
           <Button
             type="primary"

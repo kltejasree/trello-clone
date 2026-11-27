@@ -15,7 +15,7 @@ const Description = () => {
     const [showDescription, setShowDescription] = useState(true)
     const [isHovered, setIsHovered] = useState(false)
 
-    function handleDescription(e) {
+    function handleDescription(e: React.ChangeEvent<HTMLTextAreaElement>) {
         setDescription(e.target.value)
     }
 
@@ -42,7 +42,7 @@ const Description = () => {
         setEnableMoreDescription(true)
     }
 
-    function handleKeyDown(e) {
+    function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
         if (e.key === 'Escape') cancelDescription()
     }
 

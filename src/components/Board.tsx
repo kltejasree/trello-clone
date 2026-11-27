@@ -4,22 +4,35 @@ import { getAllBoards } from '../api/Boards'
 import CreateBoard from './CreateBoard'
 import {Popover} from 'antd'
 import {Link} from 'react-router-dom'
+import { all } from 'axios'
+
+interface boardType {
+    id: string;
+    name: string;
+    prefs: {
+      backgroundImage?: string;
+      backgroundColor?: string;
+    }
+
+}
 
 const Board = () => {
-    const [allBoards, setAllBoards] = useState([])
+
+    
+    const [allBoards, setAllBoards] = useState<boardType[]>([])
     const [showCreateCard, setShowCreateCard] = useState(false)
     const [open, setOpen] = useState(false)
 
     useEffect(() => {
         const AllBoards = async function() {
-            const allBoarddata = await getAllBoards();
+            const allBoarddata: boardType[] = await getAllBoards();
             setAllBoards(allBoarddata)
         }
         AllBoards();
 
     },[])
 
-    const handleOpenChange = (newOpen) => {
+    const handleOpenChange = (newOpen: boolean) => {
         setOpen(newOpen)
 
     }
@@ -66,7 +79,7 @@ const Board = () => {
       <Popover 
         content = {<CreateBoard onClose = {() => setOpen(false)}/>}
         trigger="click"
-        placement="button"
+        placement="bottom"
         open = {open}
         onOpenChange = {handleOpenChange}
       >

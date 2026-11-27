@@ -2,16 +2,18 @@ import { useState } from 'react'
 import { Popover, Button, Input } from 'antd'
 import { CheckSquareOutlined } from '@ant-design/icons'
 
-const AddChecklist = ({ onAddChecklist }) => {
+interface addCheckListProps {
+  onAddChecklist: (checkListTitle: string) => Promise<void>;
+}
+
+const AddChecklist = ({ onAddChecklist }: addCheckListProps) => {
 
   const [open, setOpen] = useState(false)
   const [checkListTitle, setCheckListTitle] = useState('Checklist')
 
   const handleAdd = async () => {
     if (!checkListTitle.trim()) return
-
     await onAddChecklist(checkListTitle)
-
     setCheckListTitle('Checklist')
     setOpen(false)
   }

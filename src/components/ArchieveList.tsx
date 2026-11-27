@@ -1,7 +1,12 @@
 import { Button, Card } from 'antd'
 import { archiveList } from '../api/List'
 
-const ArchiveList = ({ listId, refreshLists }) => {
+interface ArchieveListProps {
+    listId: string;
+    refreshLists: () => Promise<void>;
+}
+
+const ArchiveList = ({ listId, refreshLists }: ArchieveListProps) => {
 
     const handleArchive = async () => {
         try {
@@ -14,7 +19,7 @@ const ArchiveList = ({ listId, refreshLists }) => {
 
     return (
         <Card
-            className="w-[180px]"
+            className="w-45"
             styles={{ body: { padding: '12px' } }}
         >
             <Button

@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Modal } from 'antd'
-
 
 import CardActions from './CardActions'
 import ChecklistSection from './ChecklistSection'
-
 import Description from './Description'
 
 import {
@@ -20,16 +18,39 @@ import {
   updateCheckItem
 } from '../api/CheckItems'
 
-const CardDetails = ({ card, onClose }) => {
+interface CardType {
+  id: string;
+  name: string;
+}
 
-  const [checklists, setChecklists] = useState([])
-  const [checkItems, setCheckItems] = useState({})
-  const [showChecklist, setShowChecklist] = useState([])
+interface CardDetailsProps {
+  card: CardType;
+  onClose: () => void;
+}
+
+interface CheckListType {
+  id: string;
+  name: string;
+}
+
+type ItemState = 'complete' | 'incomplete';
+
+interface CheckListItem {
+  id: string;
+  name: string;
+  state: ItemState;
+}
+
+const CardDetails = ({ card, onClose }: CardDetailsProps) => {
+
+  const [checklists, setChecklists] = useState<CheckListType[]>([])
+  const [checkItems, setCheckItems] = useState<Record<string, CheckListItem[]>>({})
+  const [showChecklist, setShowChecklist] = useState<string[]>([])
 
   // Fetch all checklists
 
   const getchecklists = async () => {
-    const data = await getAllChecklists(card.id)
+    const data: CheckListType[] = await getAllChecklists(card.id)
     setChecklists(data)
   }
 
@@ -39,8 +60,8 @@ const CardDetails = ({ card, onClose }) => {
 
   // Fetch items belonging to a particular checklist
 
-  const fetchCheckItems = async (checklistId) => {
-    const data = await getCheckItems(checklistId)
+  const fetchCheckItems = async (checklistId: string) => {
+    const data: CheckListItem[] = await getCheckItems(checklistId)
 
     setCheckItems((prev) => ({
       ...prev,
@@ -50,14 +71,14 @@ const CardDetails = ({ card, onClose }) => {
 
   // Create checklist
 
-  const handleAddChecklist = async (checkListTitle) => {
+  const handleAddChecklist = async (checkListTitle: string) => {
     await createChecklist(card.id, checkListTitle)
     await getchecklists()
   }
 
   // Delete checklist
 
-  const handleDeleteChecklist = async (checklistId) => {
+  const handleDeleteChecklist = async (checklistId: string) => {
     await deleteChecklist(checklistId)
 
     await getchecklists()
@@ -73,7 +94,9 @@ const CardDetails = ({ card, onClose }) => {
     })
   }
 
-  const toggleChecklist = async (checklistId) => {
+  // Expand and collapse checklist
+
+  const toggleChecklist = async (checklistId: string) => {
 
     if (showChecklist.includes(checklistId)) {
 
@@ -92,34 +115,35 @@ const CardDetails = ({ card, onClose }) => {
 
   // Create checklist item
 
-  const handleAddItem = async (checklistId, itemTitle) => {
+  const handleAddItem = async (checklistId: string, itemTitle: string) => {
 
     if (!itemTitle.trim()) return
 
     await createCheckitem(checklistId, itemTitle)
 
     await fetchCheckItems(checklistId)
-
   }
 
   // Update checklist item status
 
-  const handleUpdateItem = async (checklistId, itemId, state) => {
+  const handleUpdateItem = async (
+    checklistId: string,
+    itemId: string,
+    state: ItemState
+  ) => {
 
     await updateCheckItem(card.id, itemId, state)
 
     await fetchCheckItems(checklistId)
-
   }
 
   // Delete checklist item
 
-  const handleDeleteItem = async (checklistId, itemId) => {
+  const handleDeleteItem = async (checklistId: string, itemId: string) => {
 
     await deleteCheckItem(checklistId, itemId)
 
     await fetchCheckItems(checklistId)
-
   }
 
   return (
@@ -130,10 +154,7 @@ const CardDetails = ({ card, onClose }) => {
       footer={null}
       width={800}
     >
-
       <div>
-
-       
 
         <CardActions
           onAddChecklist={handleAddChecklist}
@@ -153,7 +174,6 @@ const CardDetails = ({ card, onClose }) => {
         />
 
       </div>
-
     </Modal>
   )
 }
